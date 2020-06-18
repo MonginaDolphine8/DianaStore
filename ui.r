@@ -4,7 +4,17 @@ library(shiny)
 library(shinydashboard)
 library(dplyr)
 library(DT)
+library(shinyalert)
+library(odbc)
+library(RMySQL)
 
+con <- DBI::dbConnect(odbc::odbc(),
+                      driver = "MySQL ODBC 8.0 Unicode Driver",
+                      database = "test_db",
+                      UID    = "root",
+                      PWD    = "Purity@8",
+                      host = "localhost",
+                      port = 3306)
 
 ui =  tagList(includeCSS('shop.css'),
   tags$head(tags$style(HTML("
@@ -38,6 +48,8 @@ ui =  tagList(includeCSS('shop.css'),
              numericInput("quantity", "Number Of Items",value = 1, min = 1, max = 100000,step = 1),
              textInput("mpesa", "Enter MPESA Payment Code"),
              actionButton("subit","Register Details"),
+             useShinyalert(rmd = FALSE),  # Set up shinyalert
+             actionButton("btn", "Greet"),
              textOutput("tableforpatient"),
              h6(textOutput("first") , style ="position: fixed;color:blue;left: 379px;top:156px;font-size:35px;font-weight:bold;"),
              h6(textOutput("last") , style ="position: fixed;color:blue;left: 379px;top:220px;font-size:35px;font-weight:bold;")
