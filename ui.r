@@ -47,7 +47,13 @@ ui =  tagList(includeCSS('shop.css'),
              dateInput("dob","Date of Drop_off:",format = "dd-mm-yyyy"),
              numericInput("quantity", "Number Of Items",value = 1, min = 1, max = 100000,step = 1),
              textInput("mpesa", "Enter MPESA Payment Code"),
-             actionButton("subit","Register Details"),
+             conditionalPanel(
+               condition = "input.first !='' && input.last != '' && input.stores1 != '' && input.numbers != '' && input.email != '' && input.dob != '' && input.quantity != '' && input.mpesa != '' ",
+               actionButton("subit","Register Details"),
+               
+               
+             ),
+             #actionButton("subit","Register Details"),
              useShinyalert(rmd = FALSE),  # Set up shinyalert
              actionButton("btn", "Greet"),
              textOutput("tableforpatient"),
