@@ -17,6 +17,7 @@ con <- DBI::dbConnect(odbc::odbc(),
                       port = 3306)
 
 ui =  tagList(includeCSS('shop.css'),
+              
   tags$head(tags$style(HTML("
                            .navbar-nav {
                            float: none !important;
@@ -34,7 +35,7 @@ ui =  tagList(includeCSS('shop.css'),
     title = "DEE Drop Off, Pick Up",
     theme = shinytheme("cerulean"),
 
-    tabPanel("HOME"),
+    tabPanel("HOME",htmlOutput("hyper")),
     tabPanel("CUSTOMER",
       tabsetPanel(
     tabPanel("CUSTOMER REGISTRATION",

@@ -25,6 +25,10 @@ isValidEmail <- function(x) {
         ignore.case=TRUE)
 }
 server <- function(input, output, session) {
+  
+  output$hyper <- renderUI({
+    tags$iframe(src= "index.html", style="width: 100vw;height: 100vh;position: relative;", frameborder="0")
+  })
   output$tableforpatient <- renderText({
     validate(
       need(input$first !="", 
