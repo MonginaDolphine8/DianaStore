@@ -60,7 +60,7 @@ server <- function(input, output, session) {
       # print(paste0("Second Name: ",input$last,sep="\n")),
       # print(paste0("Store Name:",input$stores1, sep="\n")),
       # callbackR = function() { shinyalert(paste("Registration Successful!")) }
-      callbackR = function() { shinyalert(paste("Registration Successful!"), showConfirmButton = TRUE) }
+      callbackR = function() { actionButton("data","Confirm") }
     )
   })
   observeEvent(input$subit,{
@@ -77,7 +77,7 @@ server <- function(input, output, session) {
     
     #dbSendQuery(con, query)
     #dbGetQuery(con, query)
-    dbDisconnect(con)
+    #dbDisconnect(con)
     })
   # 
   # observeEvent(input$subit,{
