@@ -7,16 +7,10 @@ library(DT)
 library(shinyalert)
 library(odbc)
 library(RMySQL)
-
-con <- DBI::dbConnect(odbc::odbc(),
-                      driver = "MySQL ODBC 8.0 Unicode Driver",
-                      database = "test_db",
-                      UID    = "root",
-                      PWD    = "Purity@8",
-                      host = "localhost",
-                      port = 3306)
+library(shinyjs)
 
 ui =  tagList(includeCSS('shop.css'),
+
               
   tags$head(tags$style(HTML("
                            .navbar-nav {
@@ -38,32 +32,66 @@ ui =  tagList(includeCSS('shop.css'),
     tabPanel("HOME",htmlOutput("hyper")),
     tabPanel("CUSTOMER",
       tabsetPanel(
+        tabPanel("Daily PICK_UP"),
     tabPanel("CUSTOMER REGISTRATION",
+             absolutePanel(id="controls",
+                           style="position: fixed;left: 371px;top: 194px; background-color:#F9F9F0;width:757px;padding-bottom:521px;",
+                           class = "panel panel-default",
+                           draggable = FALSE,
+                           h4(textOutput("first_name"), style = "position:fixed;top:210px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                           h4(textOutput("second_name"), style = "position:fixed;top:254px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                           h4(textOutput("store_name"), style = "position:fixed;top:298px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                           h4(textOutput("phone_number"), style = "position:fixed;top:342px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                           h4(textOutput("item_desc"), style = "position:fixed;top:386px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                           h4(textOutput("item_quantity"), style = "position:fixed;top:430px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                           h4(textOutput("mpesa_code"), style = "position:fixed;top:474px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                           conditionalPanel(
+                             condition = "input.first !='' && input.last != '' && input.stores1 != ''&& input.description != '' && input.numbers != '' && input.dob != '' && input.quantity != '' && input.mpesa != '' ",
+                             h4(textOutput("confirmation_text"), style = "font-style:italic;position:fixed;top:518px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                             
+                             
+                           ),
+                           ),
              h3 ("Customer Registration(To Be Registered During Drop Off)"),
              textInput("first","First Name"),
              textInput("last","Second Name"),
              selectInput("stores1","Select A Store", choices= c("","Malazi Store", "Majengo Store","Online Dress","Online Furniture"),  multiple = FALSE),
-             textInput("numbers","Cell Phone Numers (10 digits):", placeholder = "+254"),
-             textInput("email","Enter Email Address"),
-             dateInput("dob","Date of Drop_off:",format = "dd-mm-yyyy"),
+             
+             textInput("numbers","Cell Phone Numers (10 digits):" ),
+             textAreaInput("description", "Item Description", placeholder = "Please Describe the Item"),
+             
              numericInput("quantity", "Number Of Items",value = 1, min = 1, max = 100000,step = 1),
              textInput("mpesa", "Enter MPESA Payment Code"),
+             verbatimTextOutput("value"),
              conditionalPanel(
-               condition = "input.first !='' && input.last != '' && input.stores1 != '' && input.numbers != '' && input.email != '' && input.dob != '' && input.quantity != '' && input.mpesa != '' ",
-               actionButton("subit","Register Details"),
+               condition = "input.first !='' && input.last != '' && input.stores1 != ''&& input.description != '' && input.numbers != '' && input.dob != '' && input.quantity != '' && input.mpesa != '' ",
                
-               
+               span(actionButton("subit","Register Details"), 
+                    style = "position:fixed;left:679px;top:590px;width:184px;height:47px;color:red;")
+               # position: absolute;
+               # right: 80em;
+               # top: -176px;
+               # background-color: green;
+
+
              ),
-             #actionButton("subit","Register Details"),
-             useShinyalert(rmd = FALSE),  # Set up shinyalert
-             actionButton("btn", "Greet"),
-             textOutput("tableforpatient"),
-             h6(textOutput("first") , style ="position: fixed;color:blue;left: 379px;top:156px;font-size:35px;font-weight:bold;"),
-             h6(textOutput("last") , style ="position: fixed;color:blue;left: 379px;top:220px;font-size:35px;font-weight:bold;")
+
              ),
     tabPanel("PICK_UP",
              selectInput("stores","Select A Store", choices= c("","Malazi Store", "Majengo Store","Online Dress","Online Furniture"),  multiple = FALSE),
-             dataTableOutput("datatable")
+             verbatimTextOutput('x4'),
+             verbatimTextOutput('mpesaconfirmation'),
+             
+             conditionalPanel(
+               condition = "input.table_rows_selected != ''",
+               
+               span(textInput("mpesacon",""),
+                    #style = "position:fixed;left:679px;top:590px;width:184px;height:47px;color:red;"
+                    ),
+               actionButton("verify","Verify MPESA Code"),
+               ),
+             
+             dataTableOutput("table")
              ))))
     
   
