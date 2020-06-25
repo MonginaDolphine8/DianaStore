@@ -18,6 +18,50 @@ isValidEmail <- function(x) {
 }
 server <- function(input, output, session) {
   
+  ######DAILY VALUS###########
+  
+  output$damount <- renderText({
+    p <- (input$ddatep - input$ddated)*100
+    paste0("Amount Owned:",p) })
+  
+  
+  observeEvent(input$dfirst,{
+    output$d_first <- renderText({
+      print(paste0("First Name: ",  input$dfirst))
+    })})
+  
+  observeEvent(input$dlast,{
+    output$d_last <- renderText({
+      print(paste0("Second Name: ",  input$dlast))
+    })})
+  
+  observeEvent(input$dstore, {
+    output$d_store <- renderText({
+      print(paste0("Name of The Store: ",  input$dstore))
+    })})
+  
+  observeEvent(input$dnumber,{
+    output$d_number <- renderText({
+      print(paste0("Phone Number:",  input$dnumber))
+    })})
+  
+  observeEvent(input$ddescription,{
+    output$d_description <- renderText({
+      print(paste0("Item Description:",  input$ddescription))
+    })})
+  
+  observeEvent(input$dquantity,{
+    output$d_quantity <- renderText({
+      print(paste0("Quantity:",  input$dquantity))
+    })})
+  
+  
+  output$d_confirmation_text<- renderText({
+    print(paste0("Please Confirm That The Detail Provided Above Are Correct Before Pressing The Submit Button"))
+  })
+  
+######################################################################################################################  
+  
   output$hyper <- renderUI({
     tags$iframe(src= "index.html", style="width: 100vw;height: 100vh;position: relative;", frameborder="0")
   })
@@ -195,9 +239,27 @@ observeEvent(input$verify,{
                paste0("UPDATE customer_data
                        SET Status = 'Picked'
                        WHERE `Phone Number` = ",b,""))
+    
 
 
- }})
+ }
+  dataTableProxy('table')})
+
+observeEvent(input$refresh,{ 
+  con <- DBI::dbConnect(odbc::odbc(),
+                        driver = "MySQL ODBC 8.0 Unicode Driver",
+                        database = "test_db",
+                        UID    = "root",
+                        PWD    = "Purity@8",
+                        host = "localhost",
+                        port = 3306)
+  
+  rs <- dbSendQuery(con, "SELECT * FROM customer_data")
+  data <- dbFetch(rs)
+  data <- filter(data, data$Store == input$stores)
+  dataTableProxy('table')
+ 
+})
   
   observeEvent(input$first,{
   output$first_name <- renderText({
