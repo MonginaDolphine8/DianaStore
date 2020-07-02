@@ -32,10 +32,10 @@ ui =  tagList(includeCSS('shop.css'),
 
     tabPanel("HOME",htmlOutput("hyper")),
     tabPanel("CUSTOMER",
-    setBackgroundImage(src = "Home.png"),
-    # setBackgroundColor(
-    #   color = c("#fdeabf")
-    # ),
+    #setBackgroundImage(src = "Home.png"),
+    setBackgroundColor(
+      color = c("#fdeabf")
+    ),
       tabsetPanel( 
 #         tags$head(
 #           tags$style(HTML("body{
@@ -47,18 +47,19 @@ ui =  tagList(includeCSS('shop.css'),
 
         tabPanel("Daily PICK_UP",
 
-                 absolutePanel(id="controls1",
-                               style="position: fixed;left: 371px;top: 194px; background-color:#F9F9F0;width:757px;padding-bottom:521px;",
-                               
-                               draggable = FALSE,
-                               h4(textOutput("d_first"), style = "position:fixed;top:210px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                               h4(textOutput("d_last"), style = "position:fixed;top:254px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                               h4(textOutput("d_store"), style = "position:fixed;top:298px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                               h4(textOutput("d_number"), style = "position:fixed;top:342px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                               h4(textOutput("d_description"), style = "position:fixed;top:386px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                               h4(textOutput("d_quantity"), style = "position:fixed;top:430px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+
                                conditionalPanel(
                                  condition = "input.dfirst !='' && input.dlast != '' && input.dstore != ''&& input.ddescription != '' && input.dnumbers != '' && input.dquantity != '' ",
+                                 absolutePanel(id="controls1",
+                                               style="position: fixed;left: 371px;top: 194px; background-color:#F9F9F0;width:757px;padding-bottom:521px;",
+                                               
+                                               draggable = FALSE,
+                                               h4(textOutput("d_first"), style = "position:fixed;top:210px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                               h4(textOutput("d_last"), style = "position:fixed;top:254px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                               h4(textOutput("d_store"), style = "position:fixed;top:298px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                               h4(textOutput("d_number"), style = "position:fixed;top:342px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                               h4(textOutput("d_description"), style = "position:fixed;top:386px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                               h4(textOutput("d_quantity"), style = "position:fixed;top:430px;left:378px;font-size:16px;font-weight:bold;color:green;"),
                                  h4(textOutput("d_confirmation_text"), style = "font-style:italic;position:fixed;top:474px;left:378px;font-size:16px;font-weight:bold;color:green;"),
                                  span(actionButton("submit","Register Details"), 
                                       style = "position:fixed;left:530px;top:590px;width:1921px;height:47px;color:red;"),
