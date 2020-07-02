@@ -1,6 +1,7 @@
 library(shiny)   
 library(shinythemes) 
 library(shiny)
+library(shinyWidgets)
 library(shinydashboard)
 library(dplyr)
 library(DT)
@@ -31,8 +32,21 @@ ui =  tagList(includeCSS('shop.css'),
 
     tabPanel("HOME",htmlOutput("hyper")),
     tabPanel("CUSTOMER",
-      tabsetPanel(
+    setBackgroundImage(src = "Home.png"),
+    # setBackgroundColor(
+    #   color = c("#fdeabf")
+    # ),
+      tabsetPanel( 
+#         tags$head(
+#           tags$style(HTML("body{
+#          
+#           background-image: url( WhatsApp Image 2020-07-02 at 13.53.40.jpg );
+# 
+# }"))),
+        #tags$h2("Add a shiny app background image"),
+
         tabPanel("Daily PICK_UP",
+
                  absolutePanel(id="controls1",
                                style="position: fixed;left: 371px;top: 194px; background-color:#F9F9F0;width:757px;padding-bottom:521px;",
                                
@@ -47,10 +61,11 @@ ui =  tagList(includeCSS('shop.css'),
                                  condition = "input.dfirst !='' && input.dlast != '' && input.dstore != ''&& input.ddescription != '' && input.dnumbers != '' && input.dquantity != '' ",
                                  h4(textOutput("d_confirmation_text"), style = "font-style:italic;position:fixed;top:474px;left:378px;font-size:16px;font-weight:bold;color:green;"),
                                  span(actionButton("submit","Register Details"), 
-                                      style = "position:fixed;left:530px;top:590px;width:184px;height:47px;color:red;"),
+                                      style = "position:fixed;left:530px;top:590px;width:1921px;height:47px;color:red;"),
                                  
                                ),
                                ),
+
                  h3 ("Customer Registration - For Customers Seeking Daily Services"),
           textInput("dfirst", "First Name"),  
           textInput("dlast", "Second Name"),
@@ -64,6 +79,7 @@ ui =  tagList(includeCSS('shop.css'),
                style = "position:fixed;left:12px;top:650px;width:122px;top:650px;color:black;"),
           span(verbatimTextOutput("damount"),
                style = "position:fixed;left:12px;top:700px;width:302px;top:728px;color:red;"),
+
                  
                  ),
     tabPanel("CUSTOMER REGISTRATION",
