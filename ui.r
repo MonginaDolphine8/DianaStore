@@ -36,6 +36,7 @@ ui =  tagList(includeCSS('shop.css'),
     setBackgroundColor(
       color = c("#fdeabf")
     ),
+    
       tabsetPanel( 
 #         tags$head(
 #           tags$style(HTML("body{
@@ -44,8 +45,8 @@ ui =  tagList(includeCSS('shop.css'),
 # 
 # }"))),
         #tags$h2("Add a shiny app background image"),
-
-        tabPanel("Daily PICK_UP",
+        
+        tabPanel("DAILY REGISTRATION",
 
 
                                conditionalPanel(
@@ -71,32 +72,48 @@ ui =  tagList(includeCSS('shop.css'),
           textInput("dfirst", "First Name"),  
           textInput("dlast", "Second Name"),
           textInput("dstore", "Enter The Name of the Store"),
-          textInput("dnumber", "Enter Phone Number(10 Digits)"),
-          textAreaInput("ddescription", "Item Description", placeholder = "Please Describe the Item"),
+          textInput("dnumber", "Enter Phone Number(10 Digits)" ,placeholder = "+254"),
           numericInput("dquantity", "Number Of Items",value = 1, min = 1, max = 100000,step = 1),
-          span(dateInput("ddated", "Date Of Pick-UP:", value = Sys.Date(), min = (Sys.Date()), max = "2022-02-29"), 
-               style = "position:fixed;left:189px;width:124px;color:black;top:650px;"),
-          span(dateInput("ddatep", "Date Of Drop-Off:", value = Sys.Date(), min = (Sys.Date()), max = "2022-02-29"), 
-               style = "position:fixed;left:12px;top:650px;width:122px;top:650px;color:black;"),
-          span(verbatimTextOutput("damount"),
-               style = "position:fixed;left:12px;top:700px;width:302px;top:728px;color:red;"),
+          textAreaInput("ddescription", "Item Description", placeholder = "Please Describe the Item"),
+          
+          #dateInput("ddated", "Date Of Drop-Off:", value = Sys.Date(), min = (Sys.Date()), max = "2022-02-29"),
+          #verbatimTextOutput("today_date"),
+          numericInput("dpaidamount", "Amount Paid",value = 100, min = 0, max = 100000,step = 100),
+          span(verbatimTextOutput("value1"),
+               style ="position:fixed;left:16px;bottom:172px;width:298px;font-weight:bold;"),
+          useShinyalert(),
+               #style = "position:fixed;left:189px;width:124px;color:black;top:650px;"),
+          # span(dateInput("ddatep", "Date Of Drop-Off:", value = Sys.Date(), min = (Sys.Date()), max = "2022-02-29"), 
+          #      style = "position:fixed;left:12px;top:650px;width:122px;top:650px;color:black;"),
+          # span(verbatimTextOutput("damount"),
+          #      style = "position:fixed;left:12px;top:700px;width:302px;top:728px;color:red;"),
 
                  
                  ),
-    tabPanel("CUSTOMER REGISTRATION",
-             absolutePanel(id="controls",
-                           style="position: fixed;left: 371px;top: 194px; background-color:#F9F9F0;width:757px;padding-bottom:521px;",
-                           class = "panel panel-default",
-                           draggable = FALSE,
-                           h4(textOutput("first_name"), style = "position:fixed;top:210px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                           h4(textOutput("second_name"), style = "position:fixed;top:254px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                           h4(textOutput("store_name"), style = "position:fixed;top:298px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                           h4(textOutput("phone_number"), style = "position:fixed;top:342px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                           h4(textOutput("item_desc"), style = "position:fixed;top:386px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                           h4(textOutput("item_quantity"), style = "position:fixed;top:430px;left:378px;font-size:16px;font-weight:bold;color:green;"),
-                           h4(textOutput("mpesa_code"), style = "position:fixed;top:474px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+        
+        tabPanel("DAILY PICK_UP",
+                 actionButton("drefresh","Refresh Data"),
+                 conditionalPanel(
+                   condition = "input.tabledaily_rows_selected != ''",
+                 verbatimTextOutput('amountowned'),
+                 actionButton("dailypayment","Clear Balance")),
+                 
+                 dataTableOutput("tabledaily")),    
+    tabPanel("MONTHLY REGISTRATION",
+
                            conditionalPanel(
                              condition = "input.first !='' && input.last != '' && input.stores1 != ''&& input.description != '' && input.numbers != '' && input.dob != '' && input.quantity != '' && input.mpesa != '' ",
+                             absolutePanel(id="controls",
+                                           style="position: fixed;left: 371px;top: 194px; background-color:#F9F9F0;width:757px;padding-bottom:521px;",
+                                           class = "panel panel-default",
+                                           draggable = FALSE,
+                                           h4(textOutput("first_name"), style = "position:fixed;top:210px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                           h4(textOutput("second_name"), style = "position:fixed;top:254px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                           h4(textOutput("store_name"), style = "position:fixed;top:298px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                           h4(textOutput("phone_number"), style = "position:fixed;top:342px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                           h4(textOutput("item_desc"), style = "position:fixed;top:386px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                           h4(textOutput("item_quantity"), style = "position:fixed;top:430px;left:378px;font-size:16px;font-weight:bold;color:green;"),
+                                           h4(textOutput("mpesa_code"), style = "position:fixed;top:474px;left:378px;font-size:16px;font-weight:bold;color:green;"),
                              h4(textOutput("confirmation_text"), style = "font-style:italic;position:fixed;top:518px;left:378px;font-size:16px;font-weight:bold;color:green;"),
 
                              
@@ -107,27 +124,30 @@ ui =  tagList(includeCSS('shop.css'),
              textInput("last","Second Name"),
              selectInput("stores1","Select A Store", choices= c("","Malazi Store", "Majengo Store","Online Dress","Online Furniture"),  multiple = FALSE),
              
-             textInput("numbers","Cell Phone Numers (10 digits):" ),
+             textInput("numbers","Cell Phone Numers (10 digits):",placeholder = "+254" ),
+             numericInput("quantity", "Number Of Items",value = 1, min = 1, max = 100000,step = 1),
              textAreaInput("description", "Item Description", placeholder = "Please Describe the Item"),
              
-             numericInput("quantity", "Number Of Items",value = 1, min = 1, max = 100000,step = 1),
-             textInput("mpesa", "Enter MPESA Payment Code"),
-             verbatimTextOutput("value"),
+             
+             #textInput("mpesa", "Enter MPESA Payment Code"),
+             span(verbatimTextOutput("value"),
+                   style ="position:fixed;left:16px;bottom:250px;width:297px;"),
              conditionalPanel(
                condition = "input.first !='' && input.last != '' && input.stores1 != ''&& input.description != '' && input.numbers != '' && input.dob != '' && input.quantity != '' && input.mpesa != '' ",
                
                span(actionButton("subit","Register Details"),
-                    style = "position:fixed;left:679px;top:590px;width:184px;height:47px;color:red;"),
+                    style = "position:fixed;left:679px;top:590px;width:184px;height:47px;color:red;font-weight:bold;"),
                # position: absolute;
                # right: 80em;
                # top: -176px;
                # background-color: green;
 
-
+               useShinyalert(),
              ),
 
              ),
-    tabPanel("PICK_UP",
+    
+    tabPanel("MONTHLY PICK_UP",
              selectInput("stores","Select A Store", choices= c("","Malazi Store", "Majengo Store","Online Dress","Online Furniture"),  multiple = FALSE),
              span(actionButton("refresh","Refresh Data"),
                   style = "position:fixed;top:126px;right:20px;"
@@ -138,7 +158,7 @@ ui =  tagList(includeCSS('shop.css'),
              conditionalPanel(
                condition = "input.table_rows_selected != ''",
                
-               span(textInput("mpesacon",""),
+               span(textInput("mpesacon","")
                     #style = "position:fixed;left:679px;top:590px;width:184px;height:47px;color:red;"
                     ),
                actionButton("verify","Verify MPESA Code"),

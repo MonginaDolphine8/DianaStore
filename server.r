@@ -19,7 +19,7 @@ isValidEmail <- function(x) {
 }
 server <- function(input, output, session) {
   
-  ######DAILY VALUS###########
+############################DAILY VALUS#####################################################################################################################################################################################
   
   output$damount <- renderText({
     p <- (input$ddatep - input$ddated)*100
@@ -57,14 +57,135 @@ server <- function(input, output, session) {
     })})
   
   
+  output$value1 <- renderText({paste0("Date Of Drop Off:",Sys.Date()) })
+  
   output$d_confirmation_text<- renderText({
     print(paste0("Please Confirm That The Detail Provided Above Are Correct Before Pressing The Submit Button"))
   })
   
+  
+  observeEvent(input$submit,{
+    con <- DBI::dbConnect(odbc::odbc(),
+                          driver = "MySQL ODBC 8.0 Unicode Driver",
+                          database = "test_db",
+                          UID    = "root",
+                          PWD    = "Purity@8",
+                          host = "localhost",
+                          port = 3306)
+    
+    date <- as.Date(Sys.Date())
+    
+    dbGetQuery(con
+               ,paste0("Insert daily_data 
+                        values ('",input$dfirst,"','",input$dlast,"','",input$dstore,"','",input$dnumber,"','",input$dquantity,"','",input$ddescription,"',
+                       '",date,"','",input$dpaidamount,"','","Pending","')"))
+    
+    #dbSendQuery(con, query)
+    #dbGetQuery(con, query)
+    dbDisconnect(con)
+    updateTextInput(session, "dfirst", value = "")
+    updateTextInput(session, "dlast", value = "") 
+    updateTextInput(session,"dstore",value = "")
+    updateTextInput(session, "dnumber",value = "" ,placeholder = "+254") 
+    #pdateTextInput(session, "email", value = "") 
+    # updateDateInput(session, "dob", value = Sys.Date()) 
+    # updateNumericInput(session, "quantity", value = 1) 
+    # updateTextInput(session, "mpesa", value = "")
+    shinyalert(title = "Registration Successful!", type = "success")
+    updateTextAreaInput(session, "ddescription", "Item Description", value = "",placeholder = "Please Describe the Item")
+    
+    
+  })
+  
+  
+  
+#####################################DAILY PICK UP####################################################################
+  observeEvent(input$drefresh,{output$tabledaily <- DT::renderDataTable({
+    con <- DBI::dbConnect(odbc::odbc(),
+                          driver = "MySQL ODBC 8.0 Unicode Driver",
+                          database = "test_db",
+                          UID    = "root",
+                          PWD    = "Purity@8",
+                          host = "localhost",
+                          port = 3306)
+    
+    rs <- dbSendQuery(con, "SELECT * FROM daily_data")
+    data <- dbFetch(rs)
+    
+    
+    datatable(data) %>% 
+      
+      
+      formatStyle(
+        'Status',
+        backgroundColor = styleEqual(c("Pending", "Picked"), c('green', 'red'))) 
+    
+    #dbDisconnect(con)
+    
+    
+  })
+  
+  observeEvent(input$dailypayment,{
+    con <- DBI::dbConnect(odbc::odbc(),
+                          driver = "MySQL ODBC 8.0 Unicode Driver",
+                          database = "test_db",
+                          UID    = "root",
+                          PWD    = "Purity@8",
+                          host = "localhost",
+                          port = 3306)
+    
+    rs <- dbSendQuery(con, "SELECT * FROM daily_data")
+    data <- dbFetch(rs)
+   
+    a = input$tabledaily_rows_selected
+    b = data[a, 4]
+    c = data[a, 1]
+    e <- as.character(c)
+
+      # dbGetQuery(con, statement = 
+      #              paste0("
+      #             UPDATE customer_data
+      #             SET Status = ","Picked","
+      #             WHERE `Phone Number` = ","705098186",""))
+      dbGetQuery(con,
+                 paste0("UPDATE daily_data
+                       SET Status = 'Picked'
+                       WHERE `Phone Number` = '",b,"' AND `First Name` = '",e,"'" ))
+      
+      
+       
+    
+    })
+
+  
+  output$amountowned = renderPrint({
+    con <- DBI::dbConnect(odbc::odbc(),
+                          driver = "MySQL ODBC 8.0 Unicode Driver",
+                          database = "test_db",
+                          UID    = "root",
+                          PWD    = "Purity@8",
+                          host = "localhost",
+                          port = 3306)
+    
+    rs <- dbSendQuery(con, "SELECT * FROM daily_data")
+    data <- dbFetch(rs)
+    m = input$tabledaily_rows_selected
+    n = data[m, 1]
+    cash <- data[m,8]
+    datepaid = data[m,7]
+    p <- cash - ((Sys.Date() - datepaid)*100) 
+   
+      cat('Amount Owned by:',n,"is",p)
+      #cat(n, sep = ', ')
+    
+  })
+  
+    })
+  
 ######################################################################################################################  
   
   output$hyper <- renderUI({
-    tags$iframe(src= "index.html", style="width: 100vw;height: 100vh;position: relative;", frameborder="0")
+    tags$iframe(src= "index.html", style="width: 100vw;height: 100vh;position:fixed;")
   })
   output$tableforpatient <- renderText({
     validate(
@@ -127,11 +248,12 @@ server <- function(input, output, session) {
     
     #dbSendQuery(con, query)
     #dbGetQuery(con, query)
+    shinyalert(title = "Registration Successful!", type = "success")
     dbDisconnect(con)
     updateTextInput(session, "first", value = "")
     updateTextInput(session, "last", value = "") 
     updateSelectInput(session,"stores1","Select A Store", choices= c("","Malazi Store", "Majengo Store","Online Dress","Online Furniture"))
-    updateTextInput(session, "numbers",value = "") 
+    updateTextInput(session, "numbers",value = "" ,placeholder = "+254") 
     updateTextInput(session, "email", value = "") 
     updateDateInput(session, "dob", value = Sys.Date()) 
     updateNumericInput(session, "quantity", value = 1) 
@@ -143,9 +265,9 @@ server <- function(input, output, session) {
   
 
   
+################################################################################################################################################################################
   
-  
-  output$table <- DT::renderDataTable({
+  observeEvent(input$refresh,{  output$table <- DT::renderDataTable({
     con <- DBI::dbConnect(odbc::odbc(),
                           driver = "MySQL ODBC 8.0 Unicode Driver",
                           database = "test_db",
@@ -166,9 +288,9 @@ server <- function(input, output, session) {
           backgroundColor = styleEqual(c("Pending", "Picked"), c('green', 'red'))) 
     
       #dbDisconnect(con)
+  
 
-
-  })
+  })})
   
   output$x4 = renderPrint({
     con <- DBI::dbConnect(odbc::odbc(),
@@ -211,10 +333,13 @@ server <- function(input, output, session) {
 
     }
     else{cat('THE CODES MATCH')}
+    
+    
+    
   })})
  
   
-observeEvent(input$verify,{
+  observeEvent(input$verify,{
   req(input$mpesacon)
   con <- DBI::dbConnect(odbc::odbc(),
                         driver = "MySQL ODBC 8.0 Unicode Driver",
@@ -244,23 +369,11 @@ observeEvent(input$verify,{
 
 
  }
-  dataTableProxy('table')})
+  })
 
-observeEvent(input$refresh,{ 
-  con <- DBI::dbConnect(odbc::odbc(),
-                        driver = "MySQL ODBC 8.0 Unicode Driver",
-                        database = "test_db",
-                        UID    = "root",
-                        PWD    = "Purity@8",
-                        host = "localhost",
-                        port = 3306)
+
   
-  rs <- dbSendQuery(con, "SELECT * FROM customer_data")
-  data <- dbFetch(rs)
-  data <- filter(data, data$Store == input$stores)
-  dataTableProxy('table')
- 
-})
+#################################################################################################################################################################################  
   
   observeEvent(input$first,{
   output$first_name <- renderText({
